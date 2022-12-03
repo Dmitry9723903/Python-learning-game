@@ -78,5 +78,6 @@ tmp.generate_forests(2, 10)
 tmp.generate_rivers(30)
 tmp.generate_rivers(10)
 tmp.generate_rivers(3)
+tmp.generate_rivers(3)
 tmp.print_map()
     
