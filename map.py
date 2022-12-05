@@ -2,11 +2,15 @@ from utils import randbool
 from utils import randcell
 from utils import randcell2
 
-CELL_TYPES="🟩🌲🌳🌊🎄🏡🏥✨"
+CELL_TYPES="🟩🌲🌳🌊🎄🏡🏥✨🔥"
 
 class Map:
-    def print_map():
-        pass
+
+    def __init__(self, w, h):
+        self.w = w
+        self.h = h
+        self.cells=[[0 for i in range(w)] for j in range(h)]
+
 
     def generate_coniferous_forests(self, r, mxr):
         for ri in range(self.h):
@@ -20,6 +24,13 @@ class Map:
                 if randbool(r, mxr):
                     self.cells[ri][ci]=2
     
+    def generate_villas(self, r, mxr):
+        for ri in range(self.h):
+            for ci in range(self.w):
+                if randbool(r, mxr):
+                    self.cells[ri][ci]=5
+
+
     def generate_rivers(self, l):
         rc = randcell(self.w, self.h)
         rx, ry = rc[0], rc[1]
@@ -32,11 +43,45 @@ class Map:
                 rx, ry = rx2, ry2
                 l -= 1
 
-    def __init__(self, w, h):
-        self.w = w
-        self.h = h
-        self.cells=[[0 for i in range(w)] for j in range(h)]
-        pass
+    def generate_Сhristmas_tree(self):
+        c=randcell(self.w, self.h)
+        cx, cy = c[0], c[1]
+        if (self.cells[cx][cy]==0):
+            self.cells[cx][cy]=4
+
+    def generate_spruce_tree(self):
+        c=randcell(self.w, self.h)
+        cx, cy = c[0], c[1]
+        if (self.cells[cx][cy]==0):
+            self.cells[cx][cy]=1
+
+    def generate_deciduous_tree(self):
+        c=randcell(self.w, self.h)
+        cx, cy = c[0], c[1]
+        if (self.cells[cx][cy]==0):
+            self.cells[cx][cy]=2
+
+    def add_villas(self):
+        c=randcell(self.w, self.h)
+        cx, cy = c[0], c[1]
+        if (self.cells[cx][cy]==0):
+            self.cells[cx][cy]=5
+
+    def add_fire(self):
+        c=randcell(self.w, self.h)
+        cx, cy = c[0], c[1]
+        if (self.cells[cx][cy] == 1 or self.cells[cx][cy] == 2 or self.cells[cx][cy] == 4 or self.cells[cx][cy] == 5):
+            self.cells[cx][cy]=8
+    
+    def update_fires(self):
+        for ri in range(self.h):
+            for ci in range(self.w):
+                cell = self.cells[ri][ci]
+                if cell==8:
+                    self.cells[ri][ci]=0
+        for u in range(10):
+            self.add_fire()
+
 
     def print_map(self):
         print('⬛' * (self.w + 2))
@@ -66,18 +111,9 @@ class Map:
         print('⬛' * (self.w + 2))
 
     def chack_bounds(self, x, y):
-        if x < 0 or y < 0 or x >=self.h or y >= self.w:
+        if (x < 0 or y < 0 or x >=self.h or y >= self.w):
             return False
         else:
             return True
 
 
-tmp = Map(30, 30)
-tmp.generate_coniferous_forests(1, 10)
-tmp.generate_forests(2, 10)
-tmp.generate_rivers(30)
-tmp.generate_rivers(10)
-tmp.generate_rivers(3)
-tmp.generate_rivers(3)
-tmp.print_map()
-    

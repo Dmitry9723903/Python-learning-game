@@ -10,7 +10,7 @@ def randcell(w, h):
     return(th, tw)
 
 def randcell2(x, y):
-    moves=[(-1, 0),(1, 0), (0, 1), (0, -1)]
+    moves=[(-1, 0), (1, 0), (0, 1), (0, -1)]
     t=rand(0, 3)
     dx, dy = moves[t][0], moves[t][1]
     return (x+dx, y+dy)
