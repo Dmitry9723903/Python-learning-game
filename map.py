@@ -2,9 +2,13 @@ from utils import randbool
 from utils import randcell
 from utils import randcell2
 
-CELL_TYPES="🟩🌲🌳🌊🎄🏡🏥✨🔥"
+#'🟩', cell==0 ; '🌲', cell==1; '🌳', cell==2; '🌊', cell==3; '🎄',cell==4; '🏡', cell==5; '⭐'(Hospital) cell==6,'✨' (upgrade shope), cell==7;
+#'🔥' cell==8, '⛽' (fuel station) cell==9
+
+CELL_TYPES="🟩🌲🌳🌊🎄🏡⭐✨🔥⛽"
 TREE_BOUNS = 100
 UPGRADE_COST = 500
+LIVE_COST = 1000
 
 class Map:
 
@@ -19,6 +23,8 @@ class Map:
         self.generate_rivers(3)
         self.generate_villas(1, 80)
         self.upgrade_shope()
+        self.upgrade_hospital()
+        self.add_fuel_station()
 
 
     def generate_coniferous_forests(self, r, mxr):
@@ -75,6 +81,12 @@ class Map:
         cx, cy = c[0], c[1]
         if (self.cells[cx][cy]==0):
             self.cells[cx][cy]=5
+    
+    def add_fuel_station(self):
+        c=randcell(self.w, self.h)
+        cx, cy = c[0], c[1]
+        if (self.cells[cx][cy]==0):
+            self.cells[cx][cy]=9
 
     def add_fire(self):
         c=randcell(self.w, self.h)
@@ -87,6 +99,12 @@ class Map:
         cx, cy = c[0], c[1]
         if (self.cells[cx][cy]==0):
             self.cells[cx][cy]=7
+    
+    def upgrade_hospital(self):
+        c=randcell(self.w, self.h)
+        cx, cy = c[0], c[1]
+        if (self.cells[cx][cy]==0):
+            self.cells[cx][cy]=6
 
     def update_fires(self):
         for ri in range(self.h):
@@ -98,32 +116,20 @@ class Map:
             self.add_fire()
 
 
-    def print_map(self, helico):
+    def print_map(self, helico, clouds):
         print('⬛' * (self.w + 2))
         for ri in range(self.h):
             print('⬛', end="")
             for ci in range(self.w):
                 cell=self.cells[ri][ci]
-                if (helico.x==ri and helico.y==ci):
+                if (clouds.cells[ri][ci]==1):
+                    print('⚪', end="")
+                elif (clouds.cells[ri][ci]==2):
+                    print('🔵', end="")  
+                elif (helico.x==ri and helico.y==ci):
                     print('🚁', end="")
                 elif (cell>=0 and cell<len(CELL_TYPES)):
                     print(CELL_TYPES[cell], end="")
-#                if cell==0:
-#                    print('🟩', end="")
-#                elif cell==1:
-#                    print('🌲', end="")
-#                elif cell==2:
-#                    print('🌳', end="")
-#                elif cell==3:
-#                    print('🌊', end="")
-#                elif cell==4:
-#                    print('🎄', end="")
-#                elif cell==5:
-#                    print('🏡', end="")
-#                elif cell==6:
-#                    print('🏥', end="")
-#                elif cell==7:
-#                    print('✨', end="")       
             print('⬛', end="")
             print()  
         print('⬛' * (self.w + 2))
@@ -134,8 +140,9 @@ class Map:
         else:
             return True
 
-    def process_helicipter(self, helico):
+    def process_helicipter(self, helico, clouds):
         c=self.cells[helico.x][helico.y]
+        d=clouds.cells[helico.x][helico.y]
         if (c==3):
             helico.tank = helico.mxtank
         elif (c==8 and helico.tank>0):
@@ -145,6 +152,16 @@ class Map:
         elif (c==7 and helico.score >= UPGRADE_COST):
             helico.score -= UPGRADE_COST
             helico.mxtank += 1
+        elif (c==6 and helico.score >= LIVE_COST):
+            helico.score -= LIVE_COST
+            helico.lives += 10
+        elif (c==9 and helico.score >=UPGRADE_COST):
+            helico.score -= UPGRADE_COST
+            helico.fuel += 100
+        elif (d==2):
+            helico.lives -= 1
+            if (helico.lives<=0):
+                helico.game_over()
 
 
 

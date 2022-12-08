@@ -1,5 +1,6 @@
-# 🎄, 🟩, 🌲, 🌳, 🏡, 🌊, ⬛, 🏥, ✨, 🔥, 🚁, 🛢️, 🏆
+# 🎄, 🟩, 🌲, 🌳, 🏡, 🌊, ⬛, ⭐, ✨, 🔥, 🚁, 🛢️, 🏆, 💛, ⛽,  ⚪(clouds), 🔵(lightnings), 
 from map import Map
+from clouds import Cloud
 import time
 import os
 from helicopter import Helicopter as Helico
@@ -9,12 +10,13 @@ TICK_SLEEP=0.005
 SPRUCE_TREE_UPDATE=250
 CHRISTMAS_TREE_UPDATE=300
 FIRE_UPDATE=600
+CLOUDS_UPDATE=700
 VILLAS_UPDATE=1000
 MAP_W, MAP_H=20, 20
-
+TIME_FUEL = 100
 
 tmp = Map(MAP_W, MAP_H)
-
+clouds=Cloud(MAP_W, MAP_H)
 helico=Helico(MAP_W, MAP_H)
 
 MOVES = {'w':(-1, 0), 'd':(0, 1), 's':(1, 0), 'a':(0,-1)}
@@ -34,10 +36,10 @@ listener.start()
 tick = 1
 while True:
     os.system("cls")
-    print("TICK", tick)
-    tmp.process_helicipter(helico)
+    tmp.process_helicipter(helico, clouds)
     helico.print_menu()
-    tmp.print_map(helico)
+    tmp.print_map(helico, clouds)
+    print("TICK", tick)
     tick += 1
     time.sleep(TICK_SLEEP)
     if (tick % TICK_SLEEP == 0):
@@ -50,6 +52,14 @@ while True:
         tmp.add_villas()
     if (tick % FIRE_UPDATE == 0):
         tmp.update_fires()
+    if (tick % TIME_FUEL == 0):
+        helico.fuel_decreas()
+        if (helico.fuel<=0):
+            helico.game_over()
+    if (tick % CLOUDS_UPDATE == 0):
+        clouds.update_clouds()
 
 
+    
+    
 
