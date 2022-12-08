@@ -40,3 +40,24 @@ class Helicopter:
         print("----------------------------")
         print("XXXXXXXXXXXXXXXXXXXXXXXXXXXX")
         exit(0)
+    
+    def export_data(self):
+        return {
+            'score': self.score, 
+            'lives': self.lives, 
+            'fuel': self.fuel, 
+            'tank': self.tank, 
+            'MXtank': self.mxtank, 
+            'x':self.x, 
+            'y':self.y,
+            }
+    
+    def import_data(self, data):
+        self.x = data['x'] or 0
+        self.y = data['y'] or 0
+        self.score = data['score'] or 0 
+        self.lives = data['lives'] or 30
+        self.fuel = data['fuel'] or 100
+        self.tank = data['tank'] or 0
+        self.mxtank = data['MXtank'] or 1
+
